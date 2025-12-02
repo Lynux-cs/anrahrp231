@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nibbly Munch</title>
+
+    <!-- fonts -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700;1,700&display=swap" rel="stylesheet">
+
+<!-- feather icons -->
+ <script src="https://unpkg.com/feather-icons"></script>
+
+<!-- my style -->
+    <link rel="stylesheet" href="css/style.css">
+
+<!-- AlpineJS -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<!-- App -->
+ <script src="src/app.js" async></script>
+</head>
+<body>
+
+    <!-- navbar star -->
+     <nav class="navbar" x-data>
+        <a href="#" class="navbar-logo">Nibbly<span>Munch</span></div></a>
+
+        <div class="navbar-nav">
+            <a href="#home">Home</a>
+            <a href="#about">Tentang Kami</a>
+            <a href="#menu">Menu</a>
+            <a href="#contact">Info Pemesanan</a>
+        </div>
+
+        <div class="navbar-extra">
+            <a href="#" id="search-button"><i data-feather="search"></i></a>
+            <a href="#" id="shopping-cart-button">
+                <i data-feather="shopping-cart"></i>
+                <span class="quantity-badge" x-show="$store.cart.quantity" x-text="$store.cart.quantity"></span>
+            </a>
+            <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
+        </div>
+        
+        <!-- Search form start -->
+         <div class="search-form">
+            <input type="search" id="search-box" placeholder="search here...">
+            <label for="search-box"><i data-feather="search"></i></label>
+         </div>
+        <!-- Search form end -->
+
+        <!-- Shooping cart start -->
+         <div class="shopping-cart">
+            <template x-for="(item, index) in $store.cart.items" x-key="index">
+            <div class="cart-item">
+                <img :src="`img/menu/${item.img}`" :alt="item.name">
+                <div class="item-detail">
+                    <h3 x-text="item.name"></h3>
+                    <div class="item-price">
+                        <span x-text="rupiah(item.price)"></span> &times;
+                        <button id="remove" @click="$store.cart.remove(item.id)">&minus;</button>
+                        <span x-text="item.quantity"></span>
+                        <button id="add" @click="$store.cart.add(item)">&plus;</button> &equals;
+                        <span x-text="rupiah(item.total)"></span>
+                    </div>
+                </div>
+            </div>
+            </template>
+            <h4 x-show="!$store.cart.items.length" style="margin-top: 1rem;">Cart is Empty</h4>
+            <h4 x-show="$store.cart.items.length">Total : <span x-text="rupiah($store.cart.total)"></span></h4>
+
+            <div class="form-container" x-show="$store.cart.items.length">
+                <form action="" id="checkoutForm">
+                    <input type="hidden" name="items" x-model="JSON.stringify($store.cart.items)">
+                    <input type="hidden" name="total" x-model="$store.cart.total">
+                    <h5>Customer Detail</h5>
+
+                    <label for="name">
+                        <span>Name</span>
+                        <input type="text" name="name" id="name">
+                    </label>
+                    <label for="email">
+                        <span>Email</span>
+                        <input type="email" name="email" id="email">
+                    </label>
+                    <label for="phone">
+                        <span>Phone</span>
+                        <input type="number" name="phone" id="phone" autocomplete="off">
+                        <!-- <img src="img/tentang.kami.png" alt="Tentang Kami"> -->
+                    </label>
+
+                    <button class="checkout-button disabled" type="submit" id="checkout-button" value="Checkout">Checkout</button>
+                </form>
+            </div>
+         </div>
+        <!-- Shooping cart end -->
+    </nav>
+    <!-- navbar end -->
+
+    <!-- Hero Section Start -->
+     <section class="hero" id="home">
+        <main class="content">
+            <h1>Taste The <span>Fun</span></h1>
+            <h1 class="nibbly">Nibbly <span>Munch</span></h1>
+            <p>Fruity, Cheesy, Crunchy - All in Nibbly Munch </p>
+            <a href="#menu" class="cta">Beli Sekarang</a>
+        </main>
+     </section>
+    <!-- Hero Section end -->
+
+    <!-- About section start -->
+     <section id="about" class="about">
+        <h2><span>Tentang</span>Kami</h2>
+
+        <div class="row">
+            <div class="about-img">
+                <img src="img/tentang.kami.png" alt="Tentang Kami">
+            </div>
+            <div class="content">
+                <h3>Why Nibbly?</h3>
+                <p>Nibbly Munch adalah usaha mahasiswa yang dibangun dengan kreativitas, semangat mandiri, dan komitmen untuk menghadirkan camilan berkualitas bagi semua. Nibbly Munch hadir untuk menemani kamu di setiap momen. From crunchy bites to sweet treats, we make snacks that are simple, tasty, and unforgettable</p>
+                <p></p>
+            </div>
+        </div>
+     </section>
+    <!-- About section end -->
+
+    <!-- Menu section start -->
+     <section id="menu" class="menu" x-data="products">
+        <h2><span>Menu</span>Kami</h2>
+
+        <div class="row">
+            <template x-for="(item, index) in items" x-key="index">
+            <div class="menu-card">
+                <div class="menu-card-img">
+                    <img :src="`img/menu/${item.img}`" :alt="item.name" class="menu-card-img">
+                </div>
+                <h3 class="menu-card-title" x-text="item.name"></h3>
+                <p class="menu-card-price" x-text="rupiah(item.price)"></p>
+                <div class="menu-icons">
+                    <a href="#" @click.prevent="$store.cart.add(item)">
+                        <svg
+                            width="24"
+                            height="24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <use href="/feather-sprite.svg#shopping-cart" />
+                        </svg>
+                    </a>
+                    
+                </div>
+                <!-- <a href="page2.html" class="cart">Add To Cart</a> -->
+            </div>
+            </template>
+        </div>
+     </section>
+    <!-- Menu section end -->
+
+    <!-- Contact Section Start -->
+     <section id="contact" class="contact">
+        <h2><span>Info</span>Pemesanan</h2>
+        <p class="text-content">Bisa Pesan Melalui</p>
+
+        <div class="row">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.3964590844835!2d104.72780347398717!3d-2.987338689849372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e3b75ed9c2a8d45%3A0xfb9a346051a269e5!2sKPA%20Universitas%20Sriwijaya%20-%20Kampus%20Palembang!5e0!3m2!1sen!2sid!4v1763994973646!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map"></iframe>
+
+            <form action="">
+                <a href="https://www.instagram.com/nibbly.munch?igsh=ZDJtd3VmNzJ1ZGoy" class="input-group">
+                    <i class="icon-contact" data-feather="instagram"></i>
+                    <p class="text-content">@nibbly.munch</p>
+                    <div class="link-action"></div>
+                </a>
+                <a href="https://wa.wizard.id/7a9ba8" class="input-group">
+                    <i class="icon-contact" data-feather="phone"></i>
+                    <p class="text-content">628 77-4925-0800</p>
+                </a>
+                <a href="https://maps.app.goo.gl/GZ2j5Zs6nztC1Ju69" class="input-group">
+                    <i class="icon-contact" data-feather="archive"></i>
+                    <p class="text-content">Universitas Sriwijaya, fakultas Ekonomi</p>
+                </a>
+               
+            </form>
+        </div>
+     </section>
+    <!-- Contact Section end -->
+
+    <!-- Footer start -->
+     <footer>
+        <div class="social">
+            <a href="https://www.instagram.com/nibbly.munch?igsh=ZDJtd3VmNzJ1ZGoy"><i data-feather="instagram"></i></a>
+        </div>
+
+        <div class="links">
+            <a href="#home">Home</a>
+            <a href="#about">Tentang Kami</a>
+            <a href="#menu">Menu</a>
+            <a href="#contact">Kontak</a>
+        </div>
+
+        <div class="credit">
+            <p>Creared by <a href="Kelompok 4">. | &copy; 2025.</a></p>
+        </div>
+     </footer>
+    <!-- Footer end -->
+
+    <!-- Modal box item detail start -->
+     <div class="modal" id="item-detail-modal">
+        <div class="modal-container">
+            <a href="#" class="close-icon"><i data-feather="x"></i></a>
+            <div class="modal-content">
+                <img src="img/menu/1.jpeg" alt="Menu 1">
+                <div class="product-content">
+                    <h3>Menu 1</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid quod maiores aperiam minus itaque, animi provident distinctio odio praesentium tempore enim obcaecati atque maxime cum!</p>
+                    <div class="product-stars">
+                        <i data-feather="star" class="star-full"></i>
+                        <i data-feather="star" class="star-full"></i>
+                        <i data-feather="star" class="star-full"></i>
+                        <i data-feather="star" class="star-full"></i>
+                        <i data-feather="star"></i>
+                    </div>
+                    <div class="menu-price">IDR 15K</div>
+                    <a href="#"><i data-feather="shopping-cart"></i> <span>add to cart</span></a>
+                </div>
+            </div>
+        </div>
+     </div>
+    <!-- Modal box item detail end -->
+      <div class="modal" id="item-detail-modal">
+        <div class="modal-container">
+            <a href="#" class="close-icon"><i data-feather="x"></i></a>
+            <div class="modal-content">
+                <img src="img/menu/1.jpeg" alt="Menu 1">
+                <div class="product-content">
+                    <h3>Menu 1</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid quod maiores aperiam minus itaque, animi provident distinctio odio praesentium tempore enim obcaecati atque maxime cum!</p>
+                    <div class="product-stars">
+                        <i data-feather="star" class="star-full"></i>
+                        <i data-feather="star" class="star-full"></i>
+                        <i data-feather="star" class="star-full"></i>
+                        <i data-feather="star" class="star-full"></i>
+                        <i data-feather="star"></i>
+                    </div>
+                    <div class="menu-price">IDR 15K</div>
+                    <a href="#"><i data-feather="shopping-cart"></i> <span>add to cart</span></a>
+                </div>
+            </div>
+        </div>
+     </div>
+
+    <!-- Box Payment start -->
+
+    <!-- Box Payment end -->
+
+
+    <!-- feather icons -->
+      <script>
+      feather.replace();
+    </script>
+
+    <!-- My Javascript -->
+     <script src="js/script.js"></script>
+</body>
+</html>
